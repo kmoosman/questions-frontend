@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, Fragment } from "react";
-import * as Math from "mathjs";
-import { formatNumber } from "../utils/Utils";
+
 import {
   faStar,
   faClipboard,
@@ -241,8 +240,8 @@ const Questions = () => {
                 .sort(
                   //sort by goals, values, then questions then by important
                   (a, b) => {
-                    if (a.type === "goals" && b.type !== "goals") return -1;
-                    if (a.type === "values" && b.type === "question") return -1;
+                    if (a.type === "goals" && b.type !== "goals") return -3;
+                    if (a.type === "values" && b.type === "question") return -2;
                     if (a.type === "values" && b.type === "goals") return -1;
                     if (a.type === "question" && b.type !== "question")
                       return 1;
