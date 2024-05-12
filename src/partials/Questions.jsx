@@ -186,7 +186,7 @@ const Questions = () => {
         <div className="flex flex-col lg:flex-row gap-2 items-center col-span-6">
           {/* on hover display this tooltop */}
           {activeTab === "question" ? (
-            <div className="col-span-4 w-full flex-row flex gap-2 self-center justify-center ">
+            <div className="col-span-4 w-full flex-col md:flex-row flex gap-2 self-center justify-center ">
               <div className="w-full">
                 <label className="self-center text-md font-semibold">
                   {lableLookup[activeTab]}
@@ -229,9 +229,9 @@ const Questions = () => {
           )}
         </div>
 
-        <div className="col-span-1 lg:col-span-1 flex xl:justify-end self-center w-full xl:mr-12 mt-4">
+        <div className="col-span-6 lg:col-span-1 flex xl:justify-end self-center w-full xl:mr-12 mt-4">
           <button
-            className="w-40 bg-blue-500 h-10 hover:bg-blue-700 text-white font-bold py-1 px-2 capitalize rounded"
+            className="w-40 bg-blue-500 h-10 hover:bg-blue-700 text-white font-bold py-1 mx-auto px-2 capitalize rounded"
             onClick={addSubgroup}
           >
             Add {activeTab}
