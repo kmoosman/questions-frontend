@@ -121,7 +121,7 @@ const Questions = () => {
         </div> */}
       </div>
       <div className="flex flex-row justify-between">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold mb-2">
           Search for questions or add your own
         </h1>
         <h2 className="text-md font-semibold text-slate-500">

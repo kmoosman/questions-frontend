@@ -71,11 +71,11 @@ export const Dashboard = ({ type }) => {
 
                   <p className="w-full pl-20 pr-20 pt-7 text-left text-sm">
                     The tools and questions provided on this platform are
-                    intended solely for general informational and educational
-                    purposes. We do not guarantee the accuracy or completeness
-                    of any content, and you are using these tools at your own
-                    discretion and risk. No warranty, express or implied, is
-                    provided, and we disclaim all implied warranties.
+                    intended solely for general informational purposes. We do
+                    not guarantee the accuracy or completeness of any content,
+                    and you are using these tools at your own discretion and
+                    risk. No warranty, express or implied, is provided, and we
+                    disclaim all implied warranties.
                   </p>
                   <div className="w-full text-center">
                     <button
