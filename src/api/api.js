@@ -2,8 +2,8 @@ import { useQueryClient, useQuery } from "react-query";
 import axios from "axios";
 
 const API_ENDPOINTS = {
-  // BASE_URL: "https://api.questions.com/api/",
-  BASE_URL: "http://localhost:3001/api/",
+  BASE_URL: "https://api.questions.medtechstack.com/api/",
+  //   BASE_URL: "http://localhost:3001/api/",
 };
 
 export function useGetQuestions() {
