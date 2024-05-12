@@ -5,8 +5,9 @@ import {
   faClipboard,
   faSearch,
   faTrophy,
-  faHeart,
   faQuestionCircle,
+  faShieldHeart,
+  faMedal,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../partials/Modal";
@@ -47,8 +48,8 @@ const Questions = () => {
 
   const faIconLookup = {
     question: faQuestionCircle,
-    goals: faTrophy,
-    values: faHeart,
+    goals: faMedal,
+    values: faShieldHeart,
   };
 
   const addSubgroup = () => {
@@ -237,34 +238,49 @@ const Questions = () => {
           </button>
         </div>
       </div>
-      <div ref={targetRef} className={`${generatePDF ? "pl-2 pr-2 pt-2" : ""}`}>
+      <div ref={targetRef} className={`${generatePDF ? "pl-6 pr-6 pt-4" : ""}`}>
         {generatePDF && (
-          <div className="text-center text-4xl pb-5 font-semibold text-slate-800">
-            Questions List
-          </div>
+          <>
+            <div className="text-center text-4xl pb-5 font-semibold text-slate-800">
+              Questions List
+            </div>
+            <div className="flex flex-row justify-between">
+              <div className="flex flex-row justify-between">
+                Date: ____________________
+              </div>
+              <div className="flex flex-row justify-between">
+                Provider Name: ______________________________________
+              </div>
+            </div>
+            <hr className="my-2 mt-4" />
+          </>
         )}
         {sortedCollection.length > 0 ? (
           <div
-            className={`grid grid-cols-1 md:grid-cols-2 ${
-              generatePDF ? "lg:grid-cols-1" : ""
-            } gap-8 mt-5`}
+            className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${
+              generatePDF ? "lg:grid-cols-1 gap-4 mt-0" : ""
+            } mt-5`}
           >
             {sortedCollection.length > 0 &&
               sortedCollection.map((item, index) => (
                 <div
                   key={index}
-                  className={`p-4 bg-white pb-10 shadow-lg rounded border ${
-                    generatePDF ? "max-h-32" : ""
+                  className={`p-4 bg-white pb-2 shadow-lg rounded border ${
+                    generatePDF ? "max-h-40" : ""
                   }`}
                 >
-                  <div className="w-full flex flex-row gap-2 justify-between self-center">
+                  <div className="w-full flex flex-row gap-2 justify-between self-center align-text-top">
                     <div className="text-xl font-semibold self-center">
                       <FontAwesomeIcon
                         icon={faIconLookup[item.type]}
                         className="w-6 h-6 text-red-200"
                       />
                     </div>
-                    <div className="text-xl font-semibold self-center text-left w-full flex">
+                    <div
+                      className={`text-lg font-semibold align-top ${
+                        generatePDF ? "mb-5" : ""
+                      } self-center flex text-left w-full`}
+                    >
                       {item.title}
                     </div>
                     <div className="">
