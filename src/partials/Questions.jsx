@@ -359,9 +359,9 @@ const Questions = ({ type = "new" }) => {
                   />
                 </div>
                 {/* Checkbox to mark as important  */}
-                <div className="flex flex-col lg:flex-row gap-2 items-center self-center h-full mt-4">
+                <div className="flex flex-row gap-2  w-full items-center self-center h-full mt-4">
                   <div className="self-center text-md font-semibold whitespace-nowrap">
-                    High Priority?
+                    High Priority
                   </div>
                   <input
                     className="rounded-md w-7 h-7 self-center"
@@ -371,7 +371,7 @@ const Questions = ({ type = "new" }) => {
                   />
                 </div>
                 {/* Checkbox to add a reference link  */}
-                <div className="flex flex-col lg:flex-row gap-2 items-center self-center h-full mt-4">
+                <div className="flex flex-row gap-2  w-full self-center h-full mt-4">
                   <div className="self-center text-md font-semibold whitespace-nowrap">
                     Add Reference
                   </div>
@@ -485,21 +485,24 @@ const Questions = ({ type = "new" }) => {
                     </div>
                   </div>
                   {item.reference && item.reference !== "null" && (
-                    <div className="w-full flex flex-row text-xs self-center">
-                      Reference:
-                      <a
-                        href={item.reference}
-                        target="_blank"
-                        className={`text-xs font-semibold align-top text-blue-900 underline  ${
-                          generatePDF ? "mb-5" : "overflow-y-scroll"
-                        } self-center flex text-left pl-1`}
-                      >
-                        {item.reference}
-                      </a>
-                    </div>
+                    <>
+                      <hr className="my-2" />
+                      <div className="w-full flex flex-row text-xs self-center mt-4 mb-2">
+                        Reference:
+                        <a
+                          href={item.reference}
+                          target="_blank"
+                          className={`text-xs font-semibold align-top text-blue-900 underline  ${
+                            generatePDF ? "mb-5" : "overflow-y-scroll"
+                          } self-center flex text-left pl-1`}
+                        >
+                          {item.reference}
+                        </a>
+                      </div>
+                    </>
                   )}
 
-                  {item.type === "question" && (
+                  {generatePDF && item.type === "question" && (
                     <>
                       <hr className="my-2" />
                       <div className="overflow-x-auto flex flex-col lg:flex-row justify-between ">
