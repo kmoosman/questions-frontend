@@ -359,7 +359,7 @@ const Questions = ({ type = "new" }) => {
                   />
                 </div>
                 {/* Checkbox to mark as important  */}
-                <div className="flex flex-row gap-2  w-full items-center self-center h-full mt-4">
+                <div className="flex gap-2 items-center self-center h-full mt-4">
                   <div className="self-center text-md font-semibold whitespace-nowrap">
                     High Priority
                   </div>
@@ -371,7 +371,7 @@ const Questions = ({ type = "new" }) => {
                   />
                 </div>
                 {/* Checkbox to add a reference link  */}
-                <div className="flex flex-row gap-2  w-full self-center h-full mt-4">
+                <div className="flex lg:flex-row gap-2 items-center self-center h-full mt-4">
                   <div className="self-center text-md font-semibold whitespace-nowrap">
                     Add Reference
                   </div>
@@ -486,8 +486,8 @@ const Questions = ({ type = "new" }) => {
                   </div>
                   {item.reference && item.reference !== "null" && (
                     <>
-                      <hr className="my-2" />
-                      <div className="w-full flex flex-row text-xs self-center mt-4 mb-2">
+                      {/* <hr className="my-2" /> */}
+                      <div className="w-full flex flex-row text-xs self-center mt-2 mb-2">
                         Reference:
                         <a
                           href={item.reference}

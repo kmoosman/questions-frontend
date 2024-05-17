@@ -100,6 +100,7 @@ const SearchQuestions = ({ collection, setCollection }) => {
     const newSubgroup = {
       type: "question",
       title: question.question,
+      reference: null,
       important: question?.important ? question.important : false,
     };
     setCollection([...collection, newSubgroup]);
