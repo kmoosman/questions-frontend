@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import "./css/style.css";
@@ -25,18 +25,10 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={<Dashboard rates={false} demographics={false} />}
-          />
-
-          {/* <Route
-          exact
-          path="/visualizations"
-          element={<Visual type="visualizations" />}
-        /> */}
-          <Route exact path="/privacy" element={<Privacy />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/:id" element={<Dashboard type="collection" />} />
+          <Route path="/privacy" element={<Privacy />} />
+          {/* <Route path="/visualizations" element={<Visual type="visualizations" />} /> */}
         </Routes>
       </QueryClientProvider>
     </>

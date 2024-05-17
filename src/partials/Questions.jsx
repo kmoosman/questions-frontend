@@ -8,30 +8,70 @@ import {
   faQuestionCircle,
   faShieldHeart,
   faMedal,
+  faShare,
+  faShareFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../partials/Modal";
 import SearchQuestions from "./QuestionsSearch";
 import { usePDF } from "react-to-pdf";
 import toast from "react-hot-toast";
+import { useAddCollectionPOST, useGetCollection } from "../api/api";
+import { useMutation } from "react-query";
+import { useParams } from "react-router-dom";
 
-const Questions = () => {
+const Questions = ({ type = "new" }) => {
+  const { id } = useParams();
+  const { data: collectionData } = useGetCollection(id);
+  // This should be converted into a form
   const [collection, setCollection] = useState(() => {
     // Attempt to load saved data from localStorage
-    const saved = localStorage.getItem("myCollection");
-    if (saved) {
-      return JSON.parse(saved); // Parse saved JSON back into an array
+    if (type !== "collection") {
+      const saved = localStorage.getItem("myCollection");
+      if (saved) {
+        return JSON.parse(saved);
+      }
     }
-    return []; // Default to an empty array if nothing is in localStorage
+
+    return [];
   });
+
+  useEffect(() => {
+    if (type === "collection" && collectionData) {
+      setCollection(collectionData);
+    }
+  }, [collectionData]);
+
+  const [betaCode, setBetaCode] = useState("");
   const [title, setTitle] = useState("");
   const [important, setImportant] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("question");
   const [generatePDF, setGeneratePDF] = useState(false);
+  const [referenceAdded, setReferenceAdded] = useState(false);
+  const [reference, setReference] = useState("");
   const [sortedCollection, setSortedCollection] = useState([]);
+  const [codeWord, setCodeWord] = useState("");
+  const [generatedLink, setGeneratedLink] = useState(null);
+  const [shareCollectionOpen, setShareCollectionOpen] = useState(false);
   const ref = useRef();
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
+
+  const { mutate: saveCollectionToDatabase } = useMutation(
+    (data) => useAddCollectionPOST(data),
+    {
+      onSuccess: (data) => {
+        toast.success("Collection saved successfully");
+        //set the generated link to the response link
+        setGeneratedLink(
+          "http://questions.medtechstack.com" + data.collectionId
+        );
+      },
+      onError: (error) => {
+        toast.error(`Failed to save collection: ${error.message}`);
+      },
+    }
+  );
 
   const lableLookup = {
     question: "Question",
@@ -55,10 +95,16 @@ const Questions = () => {
   const addSubgroup = () => {
     // Add subgroup to list
     const newSubgroup = {
+      reference: referenceAdded
+        ? reference !== "null"
+          ? reference
+          : null
+        : null,
       type: activeTab,
       title,
       important,
     };
+
     setCollection([...collection, newSubgroup]);
   };
 
@@ -105,6 +151,38 @@ const Questions = () => {
     setCollection([]);
   };
 
+  const shareCollection = () => {
+    setShareCollectionOpen(true);
+  };
+
+  const closeShareCollection = () => {
+    setShareCollectionOpen(false);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(generatedLink);
+    toast.success("Link copied to clipboard");
+  };
+
+  const saveCollection = () => {
+    // Save the collection to the server
+    const collectionData = {
+      collection,
+      codeWord,
+      betaCode,
+    };
+
+    saveCollectionToDatabase(collectionData, {
+      onSuccess: (data) => {
+        // Assuming the response has a 'link' property
+        setGeneratedLink(data.link);
+      },
+      onError: (error) => {
+        toast.error(`Failed to save collection: ${error.message}`);
+      },
+    });
+  };
+
   return (
     <div>
       {isModalOpen && (
@@ -115,7 +193,95 @@ const Questions = () => {
           />
         </Modal>
       )}
-      <button onClick={() => downloadPdf()}>Download PDF</button>
+      {shareCollectionOpen && (
+        <Modal
+          show={shareCollection}
+          fragment={Fragment}
+          closeModal={closeShareCollection}
+        >
+          <div>
+            <div className="flex flex-row">
+              <div className="flex flex-col gap-2 w-full mb-4">
+                <h2 className="text-xl font-semibold text-center w-full">
+                  Save and Share Collection
+                </h2>
+                <div className="text-sm font-semibold text-slate-500 mt-2">
+                  Anyone with the link generated can view your collection, so be
+                  sure to be mindful of who you share the link with and of the
+                  information you share. Avoid sharing any personal or sensitive
+                  information. No personal information is stored with the
+                  collection, only the questions you have added.
+                </div>
+                <div className="text-sm font-semibold text-slate-500 mt-2">
+                  You can return to delete the collection by entering the delete
+                  code you set below, so be sure to save it in a safe place.
+                </div>
+              </div>
+            </div>
+            <div className="mb-2">
+              <label className="text-md font-semibold">
+                Beta Code{" "}
+                <span className="text-xs font-normal">
+                  sharing is a beta feature and requires an invite code
+                </span>
+              </label>
+              <input
+                onChange={(e) => setBetaCode(e.target.value.trim())}
+                className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left"
+                type="text"
+                placeholder="Enter beta code provided"
+              />
+            </div>
+            <div>
+              <label className="text-md font-semibold">
+                Enter a delete code word to delete the collection later
+              </label>
+              <input
+                onChange={(e) => setCodeWord(e.target.value.trim())}
+                className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left"
+                type="text"
+                placeholder="Enter code word"
+              />
+            </div>
+            {/* Button to save which calls the save function then takes the url that is generated and displays it and has a copy option which copies to clipboard  */}
+            <div className="flex flex-row justify-between mt-4">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={saveCollection}
+              >
+                Save Collection
+              </button>
+              {generatedLink && (
+                <div>
+                  <label className="text-md font-semibold">
+                    Generated Link to Share
+                  </label>
+                  <div className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left">
+                    {generatedLink}
+                  </div>
+                </div>
+              )}
+
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  copyToClipboard();
+                }}
+              >
+                Copy Link
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+      <div className="flex flex-row text-left mb-4">
+        <button className="text-left" onClick={() => downloadPdf()}>
+          Download PDF
+        </button>
+        <button onClick={() => shareCollection()} className="text-left ml-4">
+          Save <FontAwesomeIcon icon={faShareFromSquare} />
+        </button>
+      </div>
       <div onClick={() => setIsModalOpen(true)}>
         {/* <div className="font-md text-slate-800 mb-5 p-4 bg-blue-100 rounded flex flex-row justify-between">
           <div>
@@ -174,10 +340,12 @@ const Questions = () => {
             Values{" "}
           </div>
         </div>
+
         <button onClick={() => clearCollection()} className="mt-4 text-sm">
           Reset
         </button>
       </div>
+
       <hr className="my-2 mb-3" />
       <div
         className="grid grid-cols-1 lg:grid-cols-7 gap-4 bg-slate-600 rounded text-white p-6 pt-8"
@@ -186,31 +354,63 @@ const Questions = () => {
         <div className="flex flex-col lg:flex-row gap-2 items-center col-span-6">
           {/* on hover display this tooltop */}
           {activeTab === "question" ? (
-            <div className="col-span-4 w-full flex-col md:flex-row flex gap-2 self-center justify-center ">
-              <div className="w-full">
-                <label className="self-center text-md font-semibold">
-                  {lableLookup[activeTab]}
-                </label>
-                <input
-                  className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left"
-                  type="text"
-                  value={title}
-                  placeholder={placeholderLookup[activeTab]}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-              {/* Checkbox to mark as important  */}
-              <div className="flex flex-col lg:flex-row gap-2 items-center self-center h-full mt-4">
-                <div className="self-center text-md font-semibold whitespace-nowrap">
-                  High Priority?
+            <div className="w-full">
+              <div className="col-span-4 w-full flex-col md:flex-row flex gap-2 self-center justify-center ">
+                <div className="w-full">
+                  <label className="self-center text-md font-semibold">
+                    {lableLookup[activeTab]}
+                  </label>
+                  <input
+                    className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left"
+                    type="text"
+                    value={title}
+                    placeholder={placeholderLookup[activeTab]}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
                 </div>
-                <input
-                  className="rounded-md w-7 h-7 self-center"
-                  type="checkbox"
-                  checked={important}
-                  onChange={(e) => setImportant(e.target.checked)}
-                />
+                {/* Checkbox to mark as important  */}
+                <div className="flex flex-col lg:flex-row gap-2 items-center self-center h-full mt-4">
+                  <div className="self-center text-md font-semibold whitespace-nowrap">
+                    High Priority?
+                  </div>
+                  <input
+                    className="rounded-md w-7 h-7 self-center"
+                    type="checkbox"
+                    checked={important}
+                    onChange={(e) => setImportant(e.target.checked)}
+                  />
+                </div>
+                {/* Checkbox to add a reference link  */}
+                <div className="flex flex-col lg:flex-row gap-2 items-center self-center h-full mt-4">
+                  <div className="self-center text-md font-semibold whitespace-nowrap">
+                    Add Reference
+                  </div>
+                  <input
+                    className="rounded-md w-7 h-7 self-center"
+                    type="checkbox"
+                    checked={referenceAdded}
+                    onChange={(e) => setReferenceAdded(e.target.checked)}
+                  />
+                </div>
               </div>
+              {referenceAdded && (
+                <div className="mt-2">
+                  <div className="col-span-4 w-full flex-col md:flex-row flex gap-2 self-center justify-center ">
+                    <div className="w-full">
+                      <label className="self-center text-md font-semibold">
+                        Reference
+                      </label>
+                      <input
+                        className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left"
+                        type="text"
+                        value={reference}
+                        placeholder="Enter link to reference here"
+                        onChange={(e) => setReference(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="col-span-6 w-full">
@@ -273,15 +473,17 @@ const Questions = () => {
                     <div className="text-xl font-semibold self-center">
                       <FontAwesomeIcon
                         icon={faIconLookup[item.type]}
-                        className="w-6 h-6 text-red-200"
+                        className="w-6 h-6 text-blue-200"
                       />
                     </div>
-                    <div
-                      className={`text-lg font-semibold align-top ${
-                        generatePDF ? "mb-5" : ""
-                      } self-center flex text-left w-full`}
-                    >
-                      {item.title}
+                    <div className="flex flex-col">
+                      <div
+                        className={`text-lg font-semibold align-top ${
+                          generatePDF ? "mb-5" : ""
+                        } self-center flex text-left w-full`}
+                      >
+                        {item.title}
+                      </div>
                     </div>
                     <div className="">
                       {item.important && (
@@ -292,6 +494,20 @@ const Questions = () => {
                       )}
                     </div>
                   </div>
+                  {item.reference && item.reference !== "null" && (
+                    <div className="w-full flex flex-row text-xs self-center">
+                      Reference:
+                      <a
+                        href={item.reference}
+                        target="_blank"
+                        className={`text-xs font-semibold align-top text-blue-900 underline  ${
+                          generatePDF ? "mb-5" : "overflow-y-scroll"
+                        } self-center flex text-left pl-1`}
+                      >
+                        {item.reference}
+                      </a>
+                    </div>
+                  )}
 
                   {item.type === "question" && (
                     <>
@@ -300,13 +516,6 @@ const Questions = () => {
                         <div className="w-full">
                           <table className="mt-1 mb-2 ml-2">
                             <tbody className="w-full ">
-                              <tr className="">
-                                <td className="text-left font-medium w-full text-xs">
-                                  Area of expertise?{" "}
-                                  <span className="pr-5 pl-2">Yes</span>{" "}
-                                  <span> No</span>
-                                </td>
-                              </tr>
                               <tr className="">
                                 <td className="text-left font-medium w-full">
                                   Answer:

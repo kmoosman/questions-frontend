@@ -91,12 +91,12 @@ export const Dashboard = ({ type }) => {
             <div className="px-4 sm:px-6 lg:px-8 py-6 w-full max-w-9xl mx-auto">
               <div className="flex flex-row mt-8 gap-4">
                 <div className="text-3xl font-bold text-slate-800 mb-2">
-                  {type === "media" ? "Media " : null} Questions List
+                  Questions List
                 </div>
               </div>
 
               <div className="mt-5">
-                <Questions />
+                <Questions type={type} />
               </div>
             </div>
           </main>
