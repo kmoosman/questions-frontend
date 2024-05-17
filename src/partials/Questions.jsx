@@ -236,13 +236,21 @@ const Questions = ({ type = "new" }) => {
             {/* Button to save which calls the save function then takes the url that is generated and displays it and has a copy option which copies to clipboard  */}
             <div className="flex flex-row justify-between mt-4">
               {generatedLink ? (
-                <div>
+                <div className="flex flex-col overflow-clip">
                   <label className="text-md font-semibold">
                     Generated Link to Share
                   </label>
                   <div className="border-2 text-black border-gray-300 rounded-md p-2 w-full text-left">
                     {generatedLink}
                   </div>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+                    onClick={() => {
+                      copyToClipboard();
+                    }}
+                  >
+                    Copy Link
+                  </button>
                 </div>
               ) : (
                 <button
@@ -252,15 +260,6 @@ const Questions = ({ type = "new" }) => {
                   Save Collection
                 </button>
               )}
-
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                  copyToClipboard();
-                }}
-              >
-                Copy Link
-              </button>
             </div>
           </div>
         </Modal>
