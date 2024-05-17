@@ -20,6 +20,9 @@ export function useGetQuestions() {
 }
 
 export function useGetCollection(id) {
+  if (!id) {
+    return { data: undefined, error: null, isLoading: false }; // Return an empty object for consistency
+  }
   const fetchCollections = async () => {
     try {
       const endpoint = `questions/${id}`;
@@ -29,7 +32,9 @@ export function useGetCollection(id) {
       throw error;
     }
   };
-  return useQuery(["collections"], fetchCollections);
+  return useQuery(["collections", id], fetchCollections, {
+    enabled: !!id,
+  });
 }
 
 async function getAPI({ endpoint }) {
