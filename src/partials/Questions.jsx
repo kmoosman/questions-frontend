@@ -62,6 +62,7 @@ const Questions = ({ type = "new" }) => {
     {
       onSuccess: (data) => {
         toast.success("Collection saved successfully");
+        debugger;
         //set the generated link to the response link
         setGeneratedLink(
           "http://questions.medtechstack.com" + data.collectionId
@@ -183,6 +184,7 @@ const Questions = ({ type = "new" }) => {
 
   return (
     <div>
+      {generatedLink}
       {isModalOpen && (
         <Modal show={isModalOpen} fragment={Fragment} closeModal={closeModal}>
           <SearchQuestions
