@@ -171,15 +171,7 @@ const Questions = ({ type = "new" }) => {
       betaCode,
     };
 
-    saveCollectionToDatabase(collectionData, {
-      onSuccess: (data) => {
-        // Assuming the response has a 'link' property
-        setGeneratedLink(data.link);
-      },
-      onError: (error) => {
-        toast.error(`Failed to save collection: ${error.message}`);
-      },
-    });
+    saveCollectionToDatabase(collectionData);
   };
 
   return (
