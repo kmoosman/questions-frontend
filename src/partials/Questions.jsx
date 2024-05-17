@@ -196,11 +196,11 @@ const Questions = ({ type = "new" }) => {
                   Save and Share Collection
                 </h2>
                 <div className="text-sm font-semibold text-slate-500 mt-2">
-                  Anyone with the link generated can view your collection, so be
-                  sure to be mindful of who you share the link with and of the
-                  information you share. Avoid sharing any personal or sensitive
-                  information. No personal information is stored with the
-                  collection, only the questions you have added.
+                  Anyone with the generated link can view your collection, so be
+                  mindful of who you share the link with and the information you
+                  share. Avoid sharing any personal or sensitive information. No
+                  personal information is stored with the collection, only the
+                  questions you have added.
                 </div>
                 <div className="text-sm font-semibold text-slate-500 mt-2">
                   You can return to delete the collection by entering the delete
