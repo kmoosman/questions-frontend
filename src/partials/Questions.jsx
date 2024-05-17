@@ -73,7 +73,7 @@ const Questions = ({ type = "new" }) => {
 
   const lableLookup = {
     question: "Question",
-    goals: "What are you goals for this visit or treatment?",
+    goals: "What are your goals for this visit or treatment?",
     values: "What is most important to you in your care?",
   };
 
