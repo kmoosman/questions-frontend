@@ -67,9 +67,7 @@ const Questions = ({ type = "new" }) => {
           "http://questions.medtechstack.com" + data.collectionId
         );
       },
-      onError: (error) => {
-        toast.error(`Failed to save collection: ${error.message}`);
-      },
+      onError: (error) => {},
     }
   );
 
