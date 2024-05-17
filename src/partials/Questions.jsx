@@ -62,9 +62,6 @@ const Questions = ({ type = "new" }) => {
     {
       onSuccess: (data) => {
         toast.success("Collection saved successfully");
-        debugger;
-        console.log(data);
-        console.log(data.collectionId);
         //set the generated link to the response link
         setGeneratedLink(
           "http://questions.medtechstack.com" + data.collectionId
@@ -178,7 +175,6 @@ const Questions = ({ type = "new" }) => {
 
   return (
     <div>
-      {generatedLink}
       {isModalOpen && (
         <Modal show={isModalOpen} fragment={Fragment} closeModal={closeModal}>
           <SearchQuestions
@@ -239,13 +235,7 @@ const Questions = ({ type = "new" }) => {
             </div>
             {/* Button to save which calls the save function then takes the url that is generated and displays it and has a copy option which copies to clipboard  */}
             <div className="flex flex-row justify-between mt-4">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={saveCollection}
-              >
-                Save Collection
-              </button>
-              {generatedLink && (
+              {generatedLink ? (
                 <div>
                   <label className="text-md font-semibold">
                     Generated Link to Share
@@ -254,6 +244,13 @@ const Questions = ({ type = "new" }) => {
                     {generatedLink}
                   </div>
                 </div>
+              ) : (
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={saveCollection}
+                >
+                  Save Collection
+                </button>
               )}
 
               <button
