@@ -64,7 +64,7 @@ const Questions = ({ type = "new" }) => {
         toast.success("Collection saved successfully");
         //set the generated link to the response link
         setGeneratedLink(
-          "http://questions.medtechstack.com" + data.collectionId
+          "https://questions.medtechstack.com/" + data.collectionId
         );
       },
       onError: (error) => {},
